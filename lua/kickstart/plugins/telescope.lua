@@ -87,21 +87,27 @@ return {
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       -- Slightly advanced example of overriding default behavior and theme
-      vim.keymap.set('n', '<leader>sb', function()
-        -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-        builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-          winblend = 10,
-          previewer = false,
-        })
-      end, { desc = '[S]earch Fuzzily in current [B]uffer' })
+      -- vim.keymap.set('n', '<leader>/', function()
+      --   -- You can pass additional configuration to Telescope to change the theme, layout, etc.
+      --   builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+      --     winblend = 10,
+      --     previewer = false,
+      --   })
+      -- end, { desc = '[S]earch Fuzzily in [/] current Buffer' })
 
       vim.keymap.set('n', '<leader>/', function()
-        builtin.live_grep {
-          cwd = utils.buffer_dir(),
-          grep_open_files = true,
-          prompt_title = 'Live Grep in Current File',
+        require('telescope.builtin').live_grep {
+          search_dirs = { vim.api.nvim_buf_get_name(0) }, -- current file only
         }
-      end, { desc = '[S]earch Live Grep [/] in Current File' })
+      end, { desc = 'Live ripgrep in [/] current file' })
+
+      -- vim.keymap.set('n', '<leader>/', function()
+      --   builtin.live_grep {
+      --     cwd = utils.buffer_dir(),
+      --     grep_open_files = true,
+      --     prompt_title = 'Live Grep in Current File',
+      --   }
+      -- end, { desc = '[S]earch Live Grep [/] in Current File' })
 
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
