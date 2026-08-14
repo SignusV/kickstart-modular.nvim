@@ -690,6 +690,17 @@ do
   --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
   --  See `:help lsp-config` for information about keys and how to configure
   ---@type table<string, vim.lsp.Config>
+  local vue_language_server_path = vim.fs.joinpath(
+    vim.fn.stdpath 'data',
+    'mason/packages/vue-language-server/node_modules/@vue/language-server'
+  )
+  local vue_plugin = {
+    name = '@vue/typescript-plugin',
+    location = vue_language_server_path,
+    languages = { 'vue' },
+    configNamespace = 'typescript',
+  }
+
   local servers = {
     -- clangd = {},
     -- gopls = {},
@@ -700,7 +711,24 @@ do
     --    https://github.com/pmizio/typescript-tools.nvim
     --
     -- But for many setups, the LSP (`ts_ls`) will work just fine
-    -- ts_ls = {},
+    -- TypeScript and Vue use the hybrid ts_ls/vue_ls setup below
+
+    ts_ls = {
+      init_options = {
+        plugins = {
+          vue_plugin,
+        },
+      },
+      filetypes = {
+        'javascript',
+        'javascriptreact',
+        'typescript',
+        'typescriptreact',
+        'vue',
+      },
+    },
+
+    vue_ls = {},
 
     stylua = {}, -- Used to format Lua code
 
@@ -906,7 +934,7 @@ do
   vim.pack.add { { src = gh 'nvim-treesitter/nvim-treesitter', version = 'main' } }
 
   -- Ensure basic parsers are installed
-  local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+  local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'typescript', 'vim', 'vimdoc' }
   require('nvim-treesitter').install(parsers)
 
   ---@param buf integer
